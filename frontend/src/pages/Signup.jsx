@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom"; // Added Link for routing
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const { isDarkMode } = useTheme();
@@ -88,6 +88,25 @@ const Signup = () => {
           }`}
         >
           Start tracking your expenses with AI.
+        </p>
+      </div>
+
+      {/* ✅ NEW: Real Email Disclaimer */}
+      <div
+        className={`mb-6 flex items-start gap-3 rounded-xl border-2 border-dashed p-4 text-sm font-medium ${
+          isDarkMode
+            ? "border-[#B9FF66] bg-[#292A32] text-gray-300"
+            : "border-[#191A23] bg-[#F3F3F3] text-gray-600"
+        }`}
+      >
+        <span className="mt-0.5 text-xl" aria-hidden="true">
+          📧
+        </span>
+        <p>
+          <strong className={isDarkMode ? "text-white" : "text-[#191A23]"}>
+            Please use a real email address.
+          </strong>{" "}
+          We will send you a welcome email to test our email delivery services.
         </p>
       </div>
 
@@ -376,7 +395,7 @@ const Signup = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 py-4 text-base font-bold transition-all hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-70 ${
+          className={`cursor-pointer mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 py-4 text-base font-bold transition-all hover:-translate-y-1 disabled:cursor-not-allowed disabled:opacity-70 ${
             isDarkMode
               ? "border-[#B9FF66] bg-[#B9FF66] text-[#191A23] shadow-[4px_4px_0_0_#ffffff]"
               : "border-[#191A23] bg-[#191A23] text-white shadow-[4px_4px_0_0_#B9FF66]"

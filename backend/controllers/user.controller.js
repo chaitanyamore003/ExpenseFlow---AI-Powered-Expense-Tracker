@@ -1,12 +1,15 @@
 const bcrypt = require("bcrypt");
 const { userModel } = require("../models/associations");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/emailService");
+const { signupConfirmationEmailHtml } = require("../utils/emailComponents");
 
 /** user signup */
 const signup = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
-    //checking if all fields are recieved or not
+
+    // checking if all fields are received or not
     if (!name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
@@ -14,11 +17,9 @@ const signup = async (req, res) => {
       });
     }
 
-    //checking for duplicate email
+    // checking for duplicate email
     const emailExist = await userModel.findOne({
-      where: {
-        email: email,
-      },
+      where: { email: email },
     });
 
     if (emailExist) {
@@ -28,11 +29,9 @@ const signup = async (req, res) => {
       });
     }
 
-    //checking duplicate phone no
+    // checking duplicate phone no
     const phoneExists = await userModel.findOne({
-      where: {
-        phone,
-      },
+      where: { phone },
     });
 
     if (phoneExists) {
@@ -43,10 +42,9 @@ const signup = async (req, res) => {
     }
 
     const saltRounds = 10;
-
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    //store the user
+    // store the user
     const user = await userModel.create({
       name: name,
       email: email,
@@ -54,6 +52,27 @@ const signup = async (req, res) => {
       phone: phone,
     });
 
+    // ✅ 1. Send Welcome Email
+    try {
+      const frontendURL = process.env.FRONTEND_URL || "http://localhost:3500";
+      const loginURL = `${frontendURL}/login`;
+
+      await sendEmail({
+        to: user.email,
+        subject: "Welcome to ExpenseFlow! 🚀",
+        textContent: `Hi ${user.name},\n\nYour ExpenseFlow account is ready! Log in here to get started: ${loginURL}`,
+        htmlContent: signupConfirmationEmailHtml(user.name, loginURL),
+      });
+    } catch (emailError) {
+      // We log the error, but we DO NOT return an error response.
+      // The user was successfully created, so the signup was a success.
+      console.error(
+        "Failed to send signup confirmation email:",
+        emailError.message,
+      );
+    }
+
+    // ✅ 2. Return Success Response
     return res.status(201).json({
       success: true,
       message: "user signup successful",
@@ -65,6 +84,7 @@ const signup = async (req, res) => {
       },
     });
   } catch (err) {
+    console.error("Signup Error:", err.message);
     return res.status(500).json({
       success: false,
       message: "signup failed",

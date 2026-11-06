@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../components/common/Navbar";
 import Footer from "../components/common/Footer";
 import { useTheme } from "../context/ThemeContext";
@@ -11,6 +11,9 @@ const Home = () => {
   const isPremium = user?.premiumStatus || false;
   const navigate = useNavigate();
   const location = useLocation();
+
+  // State to manage the disclaimer banner visibility
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   // Scroll to section when hash changes
   useEffect(() => {
@@ -32,7 +35,7 @@ const Home = () => {
       if (plan === "free") {
         navigate("/user/dashboard");
       } else {
-        navigate("/user/premium"); // Or wherever your upgrade checkout is
+        navigate("/premium"); // Updated to match your actual route
       }
     } else {
       navigate("/login");
@@ -48,6 +51,41 @@ const Home = () => {
       <Navbar />
 
       <main>
+        {/* ================= BACKEND DELAY DISCLAIMER BANNER ================= */}
+        {showDisclaimer && (
+          <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-8 lg:px-16">
+            <div
+              className={`relative flex flex-col items-start gap-3 rounded-2xl border-2 p-4 sm:flex-row sm:items-center sm:justify-between ${
+                isDarkMode
+                  ? "border-[#B9FF66] bg-[#292A32] text-[#B9FF66] shadow-[4px_4px_0_0_#B9FF66]"
+                  : "border-[#191A23] bg-[#B9FF66] text-[#191A23] shadow-[4px_4px_0_0_#191A23]"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl" aria-hidden="true">
+                  ⏳
+                </span>
+                <p className="text-sm font-bold sm:text-base">
+                  <strong>Heads up!</strong> Our backend is hosted on a free
+                  tier. If this is your first visit, it may take up to 50
+                  seconds to wake up. Thanks for your patience!
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDisclaimer(false)}
+                className={`cursor-pointer absolute right-3 top-3 rounded-lg p-1 transition-colors sm:static sm:px-4 sm:py-2 sm:text-sm sm:font-bold ${
+                  isDarkMode
+                    ? "hover:bg-[#191A23] hover:text-white"
+                    : "hover:bg-[#191A23] hover:text-white"
+                }`}
+                aria-label="Dismiss disclaimer"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ================= HERO SECTION ================= */}
         <section
           className="mx-auto max-w-7xl px-4 py-12 sm:px-8 lg:px-16 lg:py-20 scroll-mt-28"
