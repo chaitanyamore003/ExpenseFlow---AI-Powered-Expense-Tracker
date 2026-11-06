@@ -1,10 +1,4 @@
-Here is a comprehensive, professional, and highly informative `README.md` tailored specifically for **ExpenseFlow**. 
-
-I have structured it to look like a top-tier open-source project or a standout portfolio piece. It includes placeholders for your screenshots, detailed feature breakdowns, database schemas, and deployment notes.
-
-***
-
-# ⚡ ExpenseFlow — AI Integrated Expense Tracker
+#  ExpenseFlow — AI Integrated Expense Tracker
 
 <p align="center">
   <img src="https://res.cloudinary.com/ddivlvrkv/image/upload/v1793869062/expenseflow-logo-1024_tw0ubu.png" alt="ExpenseFlow Logo" width="120" style="border-radius: 20px;" />
@@ -34,38 +28,33 @@ I have structured it to look like a top-tier open-source project or a standout p
 *Experience the unique neo-brutalist "Positivus" UI, featuring high-contrast dark mode and neon green accents.*
 
 **Landing Page**
-> *(Attach screenshot of the Home page here)*
-![Landing Page](https://via.placeholder.com/1440x800.png?text=Landing+Page+Screenshot)
+<img width="1218" height="770" alt="image" src="https://github.com/user-attachments/assets/10d71aa8-7ab3-40d0-bf02-07972d07789e" />
+
 
 **Login & Signup**
-> *(Attach screenshot of the Auth pages here)*
-![Auth Page](https://via.placeholder.com/1440x800.png?text=Login+Page+Screenshot)
+<img width="1436" height="781" alt="image" src="https://github.com/user-attachments/assets/4de94e0c-692c-4558-9288-f15c0b4bce80" />
+
 
 ---
 
 ### 📊 Core Experience
 **Dashboard**
-> *(Attach screenshot of the Dashboard showing Balance, Income, Expenses, and Recent Transactions)*
-![Dashboard](https://via.placeholder.com/1440x800.png?text=Dashboard+Screenshot)
+<img width="1231" height="733" alt="image" src="https://github.com/user-attachments/assets/fa796f4d-dbf0-49d2-afa4-0e1b2e8eeb02" />
+
 
 **Transactions & AI Categorization**
-> *(Attach screenshot showing the Income/Expense toggle and the list)*
-![Transactions](https://via.placeholder.com/1440x800.png?text=Transactions+Screenshot)
+<img width="1240" height="763" alt="image" src="https://github.com/user-attachments/assets/ee795251-4ca1-4fae-a093-df0343c4e20f" />
+
 
 ---
 
 ### 👑 Premium & Reports
 **Advanced Reports & CSV Export**
-> *(Attach screenshot showing the Reports table with filters)*
-![Reports](https://via.placeholder.com/1440x800.png?text=Reports+Screenshot)
+<img width="1305" height="769" alt="image" src="https://github.com/user-attachments/assets/2bfc18f7-9b0e-4811-97c4-b373cced01fc" />
+
 
 **Cashfree Checkout & Leaderboard**
-> *(Attach screenshot of the Premium page and the Leaderboard)*
-![Premium](https://via.placeholder.com/1440x800.png?text=Premium+and+Leaderboard+Screenshot)
-
-**Themed Emails**
-> *(Attach screenshot of the dark-mode emails sent via Brevo)*
-![Emails](https://via.placeholder.com/1440x800.png?text=Email+Templates+Screenshot)
+<img width="1324" height="761" alt="image" src="https://github.com/user-attachments/assets/4dfd22d3-8b43-4ed5-bbaa-2cc6df28a276" />
 
 ---
 
@@ -237,8 +226,9 @@ The application will be running at `http://localhost:3500`.
 ## 👨‍💻 Author
 
 **Chaitanya More**
-- LinkedIn: [Your LinkedIn Profile](#)
-- GitHub: [Your GitHub Profile](#)
+
+- LinkedIn: [Chaitanya's LinkedIn](https://www.linkedin.com/in/chaitanya-more-472203244/)
+- GitHub: [Chaitanya's GitHub](https://github.com/chaitanyamore003)
 
 ## 📄 License
 
