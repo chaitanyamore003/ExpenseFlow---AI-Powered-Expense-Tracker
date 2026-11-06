@@ -118,7 +118,7 @@ const Footer = () => {
 
                 {/* GitHub */}
                 <a
-                  href="https://github.com" // Replace with your GitHub repo link
+                  href="https://github.com/chaitanyamore003/ExpenseFlow---AI-Integrated-Expense-Tracker" // Replace with your GitHub repo link
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="GitHub"
@@ -140,7 +140,7 @@ const Footer = () => {
 
                 {/* LinkedIn */}
                 <a
-                  href="https://linkedin.com" // Replace with your LinkedIn profile
+                  href="https://www.linkedin.com/in/chaitanya-more-472203244/" // Replace with your LinkedIn profile
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
@@ -163,7 +163,7 @@ const Footer = () => {
 
               {/* Creator Tag */}
               <a
-                href="https://linkedin.com" // Replace with your LinkedIn profile
+                href="https://www.linkedin.com/in/chaitanya-more-472203244/" // Replace with your LinkedIn profile
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`group mt-6 flex items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-bold transition-all hover:-translate-y-0.5 ${
