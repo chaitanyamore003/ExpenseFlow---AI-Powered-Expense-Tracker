@@ -3,10 +3,15 @@ const sendEmail = require("../utils/emailService");
 const {
   resetEmailHtml,
   resetConfirmationEmailHtml,
-} = require("../utils/emailComponents"); // ✅ Added new import
+} = require("../utils/emailComponents");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const db = require("../utils/database");
+
+// ✅ Define URLs dynamically at the top
+const frontendURL = process.env.FRONTEND_URL || "http://localhost:3500";
+// Use BACKEND_URL for the reset link so it hits the backend first
+const backendURL = process.env.BACKEND_URL || "http://localhost:3000";
 
 const forgotPassword = async (req, res) => {
   try {
@@ -32,8 +37,9 @@ const forgotPassword = async (req, res) => {
       isActive: true,
     });
 
-    // Dynamic reset URL
-    const resetURL = `https://rally-tameness-mardi.ngrok-free.dev/password/resetpassword/${requestId}`;
+    // ✅ FIXED: Use the dynamic backend URL instead of hardcoded ngrok
+    // Assuming your route is /api/password/resetpassword/:id
+    const resetURL = `${backendURL}/api/password/resetpassword/${requestId}`;
 
     // Send email through Brevo
     await sendEmail({
@@ -61,7 +67,6 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// backend/controllers/passwordController.js
 const resetPassword = async (req, res) => {
   try {
     const { id } = req.params;
@@ -74,8 +79,7 @@ const resetPassword = async (req, res) => {
       return res.status(400).send("Invalid or expired password reset link");
     }
 
-    // ✅ REDIRECT to your React Frontend instead of serving an HTML file
-    const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+    // ✅ REDIRECT to your React Frontend (using the global frontendURL variable)
     return res.redirect(`${frontendURL}/reset-password/${id}`);
   } catch (error) {
     console.error("Reset Password Error:", error);
@@ -120,7 +124,7 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    // 4. Start a transaction (optional but recommended for data safety)
+    // 4. Start a transaction
     transaction = await db.transaction();
 
     // 5. Hash the new password
@@ -140,8 +144,6 @@ const updatePassword = async (req, res) => {
 
     // ✅ 9. Send Confirmation Email
     try {
-      const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
-
       await sendEmail({
         to: user.email,
         subject: "ExpenseFlow — Password Reset Successful",
@@ -149,10 +151,10 @@ const updatePassword = async (req, res) => {
           `Your ExpenseFlow password has been successfully reset.\n\n` +
           `You can now log in to your account using your new password.\n\n` +
           `If you did not make this change, please contact support immediately.`,
+        // Uses the global frontendURL variable
         htmlContent: resetConfirmationEmailHtml(`${frontendURL}/login`),
       });
     } catch (emailError) {
-      // We log the error, but we don't return an error to the user because the password WAS successfully updated.
       console.error(
         "Failed to send reset confirmation email:",
         emailError.message,
@@ -164,7 +166,6 @@ const updatePassword = async (req, res) => {
       message: "Password updated successfully",
     });
   } catch (error) {
-    // Rollback if something goes wrong
     if (transaction && !transaction.finished) {
       await transaction.rollback();
     }

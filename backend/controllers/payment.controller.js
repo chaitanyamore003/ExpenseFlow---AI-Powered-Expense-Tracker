@@ -2,10 +2,12 @@ const { orderModel, userModel } = require("../models/associations");
 const cashfree = require("../utils/cashfree");
 const { randomUUID } = require("crypto");
 const db = require("../utils/database");
-const sendEmail = require("../utils/emailService"); // ✅ Added import
-const { premiumConfirmationEmailHtml } = require("../utils/emailComponents"); // ✅ Added import
+const sendEmail = require("../utils/emailService");
+const { premiumConfirmationEmailHtml } = require("../utils/emailComponents");
 
 const MEMBERSHIP_AMOUNT = 49;
+// ✅ Centralized URL variable with fallback
+const frontendURL = process.env.FRONTEND_URL || "http://localhost:3500";
 
 // Mock payments are permitted only in development to save API calls during testing
 const isMockPayment =
@@ -18,7 +20,7 @@ const sendPremiumConfirmationEmail = async (userId) => {
     const user = await userModel.findByPk(userId);
     if (!user) return;
 
-    const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+    // ✅ Uses the centralized frontendURL
     const dashboardURL = `${frontendURL}/user/dashboard`;
 
     await sendEmail({
@@ -32,7 +34,6 @@ const sendPremiumConfirmationEmail = async (userId) => {
       htmlContent: premiumConfirmationEmailHtml(user.name, dashboardURL),
     });
   } catch (error) {
-    // We catch the error here so that a failed email doesn't break the payment success response
     console.error("Failed to send premium confirmation email:", error.message);
   }
 };
@@ -51,7 +52,6 @@ const createOrder = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Cashfree requires a phone number for real payments
     if (!user.phone && !isMockPayment) {
       return res.status(400).json({
         success: false,
@@ -66,10 +66,8 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // Generate a unique order ID
     const orderId = `PREMIUM_${randomUUID()}`;
 
-    // 1. Create the order in our local database FIRST (status: PENDING)
     const order = await orderModel.create({
       orderId,
       amount: MEMBERSHIP_AMOUNT,
@@ -77,9 +75,6 @@ const createOrder = async (req, res) => {
       UserId: userId,
     });
 
-    // ==========================================
-    // DEVELOPMENT MOCK PAYMENT
-    // ==========================================
     if (isMockPayment) {
       console.log("Mock payment order created:", orderId);
       return res.status(201).json({
@@ -90,9 +85,6 @@ const createOrder = async (req, res) => {
       });
     }
 
-    // ==========================================
-    // REAL CASHFREE PAYMENT
-    // ==========================================
     const request = {
       order_id: orderId,
       order_amount: MEMBERSHIP_AMOUNT,
@@ -104,19 +96,17 @@ const createOrder = async (req, res) => {
         customer_phone: user.phone,
       },
       order_meta: {
-        return_url: `${process.env.FRONTEND_URL}/premium?order_id={order_id}`,
+        // ✅ FIXED: Using the centralized frontendURL variable here
+        return_url: `${frontendURL}/premium?order_id={order_id}`,
       },
     };
 
-    // 2. Call Cashfree API to generate the payment session
     const response = await cashfree.PGCreateOrder(request);
 
-    // 3. Save the Cashfree Order ID to our database for tracking
     await order.update({
       cfOrderId: response.data.cf_order_id,
     });
 
-    // 4. Send the session ID to the frontend to open the modal
     return res.status(201).json({
       success: true,
       mockPayment: false,
@@ -149,10 +139,8 @@ const verifyPayment = async (req, res) => {
         .json({ success: false, message: "Order ID is required" });
     }
 
-    // Start DB transaction to ensure both Order and User are updated atomically
     transaction = await db.transaction();
 
-    // Find the order and lock the row to prevent race conditions (double clicks/webhooks)
     const order = await orderModel.findOne({
       where: { orderId, UserId: userId },
       transaction,
@@ -166,7 +154,6 @@ const verifyPayment = async (req, res) => {
         .json({ success: false, message: "Order not found" });
     }
 
-    // Idempotency: If already successful, do nothing and return success
     if (order.status === "SUCCESSFUL") {
       await transaction.rollback();
       return res.status(200).json({
@@ -176,9 +163,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // ==========================================
-    // DEVELOPMENT MOCK PAYMENT VERIFICATION
-    // ==========================================
     if (isMockPayment) {
       await order.update(
         { status: "SUCCESSFUL", paymentId: `MOCK_PAYMENT_${order.orderId}` },
@@ -190,7 +174,6 @@ const verifyPayment = async (req, res) => {
       );
       await transaction.commit();
 
-      // ✅ Send Confirmation Email
       await sendPremiumConfirmationEmail(userId);
 
       return res.status(200).json({
@@ -200,14 +183,9 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // ==========================================
-    // REAL CASHFREE PAYMENT VERIFICATION
-    // ==========================================
-    // Fetch all payment attempts for this order from Cashfree
     const response = await cashfree.PGOrderFetchPayments(orderId);
     const payments = response.data;
 
-    // If no payments exist yet
     if (!Array.isArray(payments) || payments.length === 0) {
       await transaction.rollback();
       return res.status(200).json({
@@ -217,7 +195,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // Look for a successful payment
     const successfulPayment = payments.find(
       (payment) => payment.payment_status === "SUCCESS",
     );
@@ -225,7 +202,6 @@ const verifyPayment = async (req, res) => {
     if (successfulPayment) {
       const paidAmount = Number(successfulPayment.payment_amount);
 
-      // Security check: Ensure the amount and order ID match what we expect
       if (
         successfulPayment.order_id !== orderId ||
         paidAmount !== Number(order.amount)
@@ -237,7 +213,6 @@ const verifyPayment = async (req, res) => {
         });
       }
 
-      // Update order to SUCCESSFUL
       await order.update(
         {
           status: "SUCCESSFUL",
@@ -246,7 +221,6 @@ const verifyPayment = async (req, res) => {
         { transaction },
       );
 
-      // Upgrade user to Premium
       await userModel.update(
         { isPremium: true },
         { where: { id: userId }, transaction },
@@ -254,7 +228,6 @@ const verifyPayment = async (req, res) => {
 
       await transaction.commit();
 
-      // ✅ Send Confirmation Email
       await sendPremiumConfirmationEmail(userId);
 
       return res.status(200).json({
@@ -264,7 +237,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // If payment is still processing
     const pendingPayment = payments.find(
       (payment) => payment.payment_status === "PENDING",
     );
@@ -277,7 +249,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // If all payment attempts failed
     const allFailed = payments.every(
       (payment) => payment.payment_status === "FAILED",
     );
@@ -291,7 +262,6 @@ const verifyPayment = async (req, res) => {
       });
     }
 
-    // Default fallback
     await transaction.rollback();
     return res.status(200).json({
       success: true,
