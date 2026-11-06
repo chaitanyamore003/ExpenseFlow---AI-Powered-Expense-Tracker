@@ -1,0 +1,107 @@
+
+# =====================================
+# DEPENDENCIES
+# =====================================
+node_modules/
+.pnp/
+.pnp.js
+
+# =====================================
+# ENVIRONMENT VARIABLES / SECRETS
+# =====================================
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# =====================================
+# LOG FILES
+# =====================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pem
+
+# =====================================
+# BUILD OUTPUTS
+# =====================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.output/
+coverage/
+
+# =====================================
+# CACHE FILES
+# =====================================
+.cache/
+.parcel-cache/
+.eslintcache
+.vite/
+.turbo/
+*.tsbuildinfo
+
+# =====================================
+# TEMPORARY FILES
+# =====================================
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# =====================================
+# OPERATING SYSTEM FILES
+# =====================================
+.DS_Store
+.DS_Store?
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# =====================================
+# IDE / EDITOR FILES
+# =====================================
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =====================================
+# TESTING / DEBUGGING
+# =====================================
+.nyc_output/
+playwright-report/
+test-results/
+
+# =====================================
+# DATABASE / LOCAL DATA
+# =====================================
+*.sqlite
+*.sqlite3
+*.db
+
+# =====================================
+# DEPLOYMENT / CLOUD
+# =====================================
+.vercel/
+.netlify/
+.serverless/
+
+# =====================================
+# MISCELLANEOUS
+# =====================================
+*.orig
+*.rej
+.DockerDesktop/
+
