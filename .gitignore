@@ -24,7 +24,7 @@ yarn-debug.log*
 pnpm-debug.log*
 lerna-debug.log*
 .pem
-
+ca.pem
 # =====================================
 # BUILD OUTPUTS
 # =====================================
@@ -104,4 +104,11 @@ test-results/
 *.orig
 *.rej
 .DockerDesktop/
+
+# SSL certificates and private keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 
