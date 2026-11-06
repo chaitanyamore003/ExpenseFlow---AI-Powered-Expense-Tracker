@@ -43,7 +43,9 @@ const resetEmailHtml = (resetURL) => `
               <p style="margin:0 0 28px; font-family:Inter,Arial,sans-serif; font-size:15px; line-height:1.6; color:#a1a1aa;">
                 We received a request to reset the password for your ExpenseFlow account. Click the button below to choose a new one.
               </p>
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
+              
+              <!-- Button -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 32px;">
                 <tr>
                   <td align="center" bgcolor="#B9FF66" style="border-radius:12px; border:2px solid #B9FF66; background-color:#B9FF66;">
                     <a href="${resetURL}" target="_blank" rel="noopener" style="display:inline-block; padding:14px 32px; font-family:Inter,Arial,sans-serif; font-size:16px; font-weight:800; letter-spacing:-0.2px; color:#191A23; text-decoration:none; border-radius:10px;">
@@ -52,15 +54,11 @@ const resetEmailHtml = (resetURL) => `
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 16px; font-family:Inter,Arial,sans-serif; font-size:13px; line-height:1.6; color:#a1a1aa;">
-                If the button doesn't work, copy and paste this link into your browser:
-              </p>
-              <p style="margin:0 0 24px; padding:14px; background-color:#191A23; border:2px solid #3f3f46; border-radius:12px; font-family:Inter,Arial,sans-serif; font-size:13px; line-height:1.6; word-break:break-all;">
-                <a href="${resetURL}" target="_blank" rel="noopener" style="color:#B9FF66; text-decoration:underline;">${resetURL}</a>
-              </p>
+
+              <!-- Footer Note -->
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td style="padding-top:20px; border-top:2px solid #3f3f46; font-family:Inter,Arial,sans-serif; font-size:13px; line-height:1.6; color:#a1a1aa;">
+                  <td style="padding-top:24px; border-top:2px solid #3f3f46; font-family:Inter,Arial,sans-serif; font-size:13px; line-height:1.6; color:#a1a1aa;">
                     Didn't request a password reset? You can safely ignore this email — your password won't change.
                   </td>
                 </tr>
