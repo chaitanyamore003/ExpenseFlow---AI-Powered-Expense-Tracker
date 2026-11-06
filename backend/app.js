@@ -19,14 +19,39 @@ const app = express();
 
 // Middlewares
 
+// ✅ Updated CORS configuration
+const allowedOrigins = [
+  "http://localhost:3500", // Local development
+  "http://localhost:3000",
+  process.env.FRONTEND_URL, // From your Render Environment Variables
+  "https://frontend-seven-dusky-4x47zr7zuo.vercel.app",
+  "https://frontend-chaitanya-more-s-projects.vercel.app",
+  "https://frontend-git-main-chaitanya-more-s-projects.vercel.app",
+  "https://frontend-1xeom77m9-chaitanya-more-s-projects.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      // Check if the origin is in our allowed list OR if it's a Vercel preview URL
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.endsWith(".vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -53,8 +78,8 @@ app.use((req, res) => {
 db.sync({ force: false })
   .then(() => {
     console.log("Database synchronization successful");
-    app.listen(process.env.PORT, () => {
-      console.log(`Server running on port ${process.env.PORT}`);
+    app.listen(process.env.PORT || 3000, () => {
+      console.log(`Server running on port ${process.env.PORT || 3000}`);
     });
   })
   .catch((err) => {
