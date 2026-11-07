@@ -11,7 +11,6 @@ const errorHandler = require("./middlewares/errorHandler");
 
 const cors = require("cors");
 const morgan = require("morgan");
-const path = require("path");
 
 require("./models/associations");
 
@@ -55,9 +54,6 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Serve frontend static files
-app.use(express.static(path.join(__dirname, "../frontend")));
 
 // API routes
 app.use("/api/users", userRouter);
