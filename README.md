@@ -18,7 +18,7 @@
 
 **ExpenseFlow** is a full-stack, AI-powered personal finance application. It moves beyond simple expense tracking by automatically categorizing transactions (both Income and Expenses) using AI, providing deep financial insights through dynamic reporting, and offering a gamified Premium experience with a live spending leaderboard.
 
-🌐 **Live Demo:** [https://frontend-chaitanya-more-s-projects.vercel.app/](https://frontend-chaitanya-more-s-projects.vercel.app/)
+🌐 **Live Demo:** [Expense Flow Live](frontend-seven-dusky-4x47zr7zuo.vercel.app)
 
 ---
 
