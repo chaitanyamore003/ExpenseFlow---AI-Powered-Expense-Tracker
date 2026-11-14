@@ -18,11 +18,9 @@ const app = express();
 
 // Middlewares
 
-// ✅ Updated CORS configuration
 const allowedOrigins = [
-  "http://localhost:3500", // Local development
+  "http://localhost:3500",
   "http://localhost:3000",
-  process.env.FRONTEND_URL, // From your Render Environment Variables
   "https://frontend-seven-dusky-4x47zr7zuo.vercel.app",
   "https://frontend-chaitanya-more-s-projects.vercel.app",
   "https://frontend-git-main-chaitanya-more-s-projects.vercel.app",
@@ -32,21 +30,14 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      // Check if the origin is in our allowed list OR if it's a Vercel preview URL
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        origin.endsWith(".vercel.app")
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
